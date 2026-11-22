@@ -1,0 +1,42 @@
+name: 青春安理活动报名监控
+
+# 定时触发说明：
+# GitHub Actions 的 cron 使用 UTC 时间，而你需要的是北京时间（UTC+8）。
+# 换算关系：北京时间 9/12/18/23 点 = UTC 1/4/10/15 点。
+# 下面的 cron 即 "0 1,4,10,15 * * *"，对应北京时间每天 9、12、18、23 点整。
+# workflow_dispatch 允许你在 Actions 页面手动点击运行，用于测试。
+on:
+  schedule:
+    - cron: '0 1,4,10,15 * * *'
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 运行监控并发邮件
+        env:
+          SCHOOL_CODE: ${{ secrets.SCHOOL_CODE }}
+          STU_ID: ${{ secrets.STU_ID }}
+          STU_PASSWORD: ${{ secrets.STU_PASSWORD }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_CODE: ${{ secrets.SMTP_CODE }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
+          MY_GRADE: ${{ secrets.MY_GRADE }}
+          MY_COLLEGE: ${{ secrets.MY_COLLEGE }}
+          MY_MAJOR: ${{ secrets.MY_MAJOR }}
+          MY_CLASS: ${{ secrets.MY_CLASS }}
+        run: python cloud_monitor.py
