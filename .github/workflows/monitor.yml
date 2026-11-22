@@ -26,17 +26,19 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: 运行监控并发邮件
+        # 可选参数用 GitHub Actions 表达式的 || 提供兜底默认值，
+        # 未配置的 Secrets 为空字符串会覆盖脚本默认值，其中 SMTP_PORT 空串会让 int('') 崩溃。
         env:
-          SCHOOL_CODE: ${{ secrets.SCHOOL_CODE }}
+          SCHOOL_CODE: ${{ secrets.SCHOOL_CODE || '10361' }}
           STU_ID: ${{ secrets.STU_ID }}
           STU_PASSWORD: ${{ secrets.STU_PASSWORD }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_CODE: ${{ secrets.SMTP_CODE }}
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST || 'smtp.qq.com' }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT || '465' }}
           TO_EMAIL: ${{ secrets.TO_EMAIL }}
-          MY_GRADE: ${{ secrets.MY_GRADE }}
-          MY_COLLEGE: ${{ secrets.MY_COLLEGE }}
-          MY_MAJOR: ${{ secrets.MY_MAJOR }}
-          MY_CLASS: ${{ secrets.MY_CLASS }}
+          MY_GRADE: ${{ secrets.MY_GRADE || '2026' }}
+          MY_COLLEGE: ${{ secrets.MY_COLLEGE || '数学与大数据学院' }}
+          MY_MAJOR: ${{ secrets.MY_MAJOR || '信息与计算科学' }}
+          MY_CLASS: ${{ secrets.MY_CLASS || '信计26-4' }}
         run: python cloud_monitor.py
