@@ -39,7 +39,7 @@ jobs:
 
       - name: 重新启用定时工作流
         run: |
-          gh api -X POST "repos/$GITHUB_REPOSITORY/actions/workflows/monitor.yml/enable"
-          gh api -X POST "repos/$GITHUB_REPOSITORY/actions/workflows/keepalive.yml/enable"
+          gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/monitor.yml/enable"
+          gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/keepalive.yml/enable"
         env:
           GH_TOKEN: ${{ github.token }}
